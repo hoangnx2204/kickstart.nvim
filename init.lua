@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -102,9 +102,10 @@ vim.g.have_nerd_font = false
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
+-- use 'a' to enable mouse
 vim.o.mouse = 'a'
 
 -- Don't show the mode, since it's already in the status line
@@ -175,6 +176,9 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Open [d]iagnostic for current line' })
+vim.keymap.set('n', '<leader>-', '<C-w>J<C-w>k<C-w>_', { desc = 'Minimize focused window' })
+vim.keymap.set('n', '<C-/>', 'gcc', { desc = 'Comment code' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -198,6 +202,8 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<C-0>', '<C-w>J<C-w>k<C-w>_', { desc = 'Minimize focused windows' })
+vim.keymap.set('n', '<C-w>0', '<C-w>J<C-w>k<C-w>_', { desc = 'Minimize focused windows' })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -218,6 +224,23 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.hl.on_yank()
   end,
 })
+
+-- vim.api.nvim_create_autocmd('FileType', {
+--   pattern = 'dart',
+--   callback = function()
+--     vim.opt_local.colorcolumn = '80'
+--   end,
+-- })
+
+-- Autosave using autocmd
+-- vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
+--   callback = function()
+--     vim.cmd.write { mods = { silent = true } }
+--     vim.defer_fn(function()
+--       vim.api.nvim_echo({}, false, {})
+--     end, 2000)
+--   end,
+-- })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -247,15 +270,38 @@ rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-  'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
-
+  {
+    'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
+    opts = {
+      auto_cmd = true, -- Set to false to disable automatic execution
+      override_editorconfig = false, -- Set to true to override settings set by .editorconfig
+      filetype_exclude = { -- A list of filetypes for which the auto command gets disabled
+        'netrw',
+        'tutor',
+      },
+      buftype_exclude = { -- A list of buffer types for which the auto command gets disabled
+        'help',
+        'nofile',
+        'terminal',
+        'prompt',
+      },
+      on_tab_options = { -- A table of vim options when tabs are detected
+        ['expandtab'] = false,
+      },
+      on_space_options = { -- A table of vim options when spaces are detected
+        ['expandtab'] = true,
+        ['tabstop'] = 'detected', -- If the option value is 'detected', The value is set to the automatically detected indent size.
+        ['softtabstop'] = 'detected',
+        ['shiftwidth'] = 'detected',
+      },
+    },
+  },
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
   --
   -- Use `opts = {}` to automatically pass options to a plugin's `setup()` function, forcing the plugin to be loaded.
   --
-
   -- Alternatively, use `config = function() ... end` for full control over the configuration.
   -- If you prefer to call `setup` explicitly, use:
   --    {
@@ -542,6 +588,18 @@ require('lazy').setup({
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
           map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
+          map('grq', function()
+            vim.lsp.buf.code_action { context = { only = { 'quickfix' }, diagnostics = {} } }
+          end, '[G]oto Code [Q]uick Fix', { 'n', 'x' })
+          map('<C-.>', function()
+            vim.lsp.buf.code_action { context = { only = { 'quickfix' }, diagnostics = {} } }
+          end, 'Quick Fix', { 'n', 'x', 'i' })
+          -- {
+          --   '<C-.>',
+          --   vim.lsp.buf.code_action { apply = true, context = { only = { 'source.fixAll' }, diagnostics = {} } },
+          --   mode = { 'n' },
+          --   desc = 'Show Code Action',
+          -- },
 
           -- Find references for the word under your cursor.
           map('grr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
@@ -640,19 +698,21 @@ require('lazy').setup({
             [vim.diagnostic.severity.HINT] = '󰌶 ',
           },
         } or {},
-        virtual_text = {
-          source = 'if_many',
-          spacing = 2,
-          format = function(diagnostic)
-            local diagnostic_message = {
-              [vim.diagnostic.severity.ERROR] = diagnostic.message,
-              [vim.diagnostic.severity.WARN] = diagnostic.message,
-              [vim.diagnostic.severity.INFO] = diagnostic.message,
-              [vim.diagnostic.severity.HINT] = diagnostic.message,
-            }
-            return diagnostic_message[diagnostic.severity]
-          end,
-        },
+        virtual_text = false,
+        jump = { float = true },
+        --   {
+        --   source = 'if_many',
+        --   spacing = 2,
+        --   format = function(diagnostic)
+        --     local diagnostic_message = {
+        --       [vim.diagnostic.severity.ERROR] = diagnostic.message,
+        --       [vim.diagnostic.severity.WARN] = diagnostic.message,
+        --       [vim.diagnostic.severity.INFO] = diagnostic.message,
+        --       [vim.diagnostic.severity.HINT] = diagnostic.message,
+        --     }
+        --     return diagnostic_message[diagnostic.severity]
+        --   end,
+        -- },
       }
 
       -- LSP servers and clients are able to communicate to each other what features they support.
@@ -742,30 +802,31 @@ require('lazy').setup({
     cmd = { 'ConformInfo' },
     keys = {
       {
-        '<leader>f',
+        '<Esc>',
         function()
           require('conform').format { async = true, lsp_format = 'fallback' }
+          vim.lsp.buf.code_action { apply = true, context = { only = { 'source.fixAll' }, diagnostics = {} } }
         end,
-        mode = '',
+        mode = 'n',
         desc = '[F]ormat buffer',
       },
     },
     opts = {
       notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          return {
-            timeout_ms = 500,
-            lsp_format = 'fallback',
-          }
-        end
-      end,
+      -- format_on_save = function(bufnr)
+      --   -- Disable "format_on_save lsp_fallback" for languages that don't
+      --   -- have a well standardized coding style. You can add additional
+      --   -- languages here or re-enable it for the disabled ones.
+      --   local disable_filetypes = { c = true, cpp = true }
+      --   if disable_filetypes[vim.bo[bufnr].filetype] then
+      --     return nil
+      --   else
+      --     return {
+      --       timeout_ms = 500,
+      --       lsp_format = 'fallback',
+      --     }
+      --   end
+      -- end,
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
@@ -835,8 +896,10 @@ require('lazy').setup({
         -- <c-k>: Toggle signature help
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
-
+        preset = 'enter',
+        --
+        -- ['<C-a>'] = { 'show', 'show_documentation', 'hide_documentation' },
+        --
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
       },
@@ -886,8 +949,11 @@ require('lazy').setup({
     config = function()
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
+        transpacent = true,
         styles = {
           comments = { italic = false }, -- Disable italics in comments
+          slidebars = 'transparent',
+          floats = 'transparent',
         },
       }
 
@@ -964,6 +1030,107 @@ require('lazy').setup({
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
 
+  -- Flutter plugin
+  {
+    'nvim-flutter/flutter-tools.nvim',
+    lazy = false,
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'stevearc/dressing.nvim', -- optional for vim.ui.select
+    },
+    keys = {
+      { '<leader>f', '', ft = { 'dart', 'log' }, desc = '[F]lutter' },
+      { '<leader>fr', '<cmd>FlutterRun<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [r]un' },
+      { '<leader>fR', '<cmd>FlutterRestart<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [R]estart' },
+      { '<leader>fl', '<cmd>FlutterLogToggle<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [L]og Toggle' },
+      { '<leader>fe', '<cmd>FlutterEmulators<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [E]mulators' },
+      { '<leader>fd', '<cmd>FlutterDevices<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [D]evices' },
+      { '<leader>fD', '<cmd>FlutterOpenDevTools<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter Open [D]evTools' },
+      { '<leader>fpg', '<cmd>FlutterPubGet<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter Pub Get' },
+      { '<leader>fq', '<cmd>FlutterQuit<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [Q]uit' },
+    },
+    config = true,
+  },
+
+  -- AutoSave
+  {
+    'pocco81/auto-save.nvim',
+    config = true,
+  },
+  --
+  -- Files and directories
+  {
+    'stevearc/oil.nvim',
+    --@module 'oil'
+    --@type oil.SetupOpts
+    opts = {},
+    -- Optional dependencies
+    dependencies = { { 'echasnovski/mini.icons', opts = {} } },
+    -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+    -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+    lazy = false,
+  },
+
+  -- Lualine: Status line
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    opts = {
+      options = {
+        icons_enabled = true,
+        theme = 'auto',
+        component_separators = { left = '', right = '' },
+        section_separators = { left = '', right = '' },
+        disabled_filetypes = {
+          statusline = {},
+          winbar = {},
+        },
+        ignore_focus = {},
+        always_divide_middle = true,
+        always_show_tabline = true,
+        globalstatus = false,
+        refresh = {
+          statusline = 1000,
+          tabline = 1000,
+          winbar = 1000,
+          refresh_time = 16, -- ~60fps
+          events = {
+            'WinEnter',
+            'BufEnter',
+            'BufWritePost',
+            'SessionLoadPost',
+            'FileChangedShellPost',
+            'VimResized',
+            'Filetype',
+            'CursorMoved',
+            'CursorMovedI',
+            'ModeChanged',
+          },
+        },
+      },
+      sections = {
+        lualine_a = { 'mode' },
+        lualine_b = { 'branch', 'diff', 'diagnostics' },
+        lualine_c = { 'filename' },
+        lualine_x = { 'encoding', 'fileformat', 'filetype' },
+        lualine_y = { 'progress' },
+        lualine_z = { 'location' },
+      },
+      inactive_sections = {
+        lualine_a = {},
+        lualine_b = {},
+        lualine_c = { 'filename' },
+        lualine_x = { 'location' },
+        lualine_y = {},
+        lualine_z = {},
+      },
+      tabline = {},
+      winbar = {},
+      inactive_winbar = {},
+      extensions = {},
+    },
+  },
+
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -976,7 +1143,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
