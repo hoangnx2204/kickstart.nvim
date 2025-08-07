@@ -49,7 +49,8 @@ Neovim's configurations are located under the following paths, depending on your
 | :- | :--- |
 | Linux, MacOS | `$XDG_CONFIG_HOME/nvim`, `~/.config/nvim` |
 | Windows (cmd)| `%localappdata%\nvim\` |
-| Windows (powershell)| `$env:LOCALAPPDATA\nvim\` |
+| Windows (powershell)| `$env:LOCALAPPDATA\nvim-data\` |
+
 
 #### Recommended Step
 
@@ -166,6 +167,21 @@ See `telescope-fzf-native` documentation for [more details](https://github.com/n
 This requires:
 
 - Install CMake and the Microsoft C++ Build Tools on Windows
+  using this portable [c,c++ devkit](https://github.com/skeeto/w64devkit/)
+  Fix ctrl + space combination doesnt work by using this setting for windows terminal
+  ```json
+  {
+    "actions": [
+      {
+        "keys": "ctrl+space",
+        "command": {
+          "action": "sendInput",
+          "input": "\u001b[32;5u"
+        }
+      }
+    ]
+  }
+  ```
 
 ```lua
 {'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
