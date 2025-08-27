@@ -51,6 +51,11 @@ Neovim's configurations are located under the following paths, depending on your
 | Windows (cmd)| `%localappdata%\nvim\` |
 | Windows (powershell)| `$env:LOCALAPPDATA\nvim-data\` |
 
+Remove Neovim's data if got error
+| OS | PATH |
+| :- | :--- |
+| Linux, MacOS | `/Users/{user_name}/.local/share/nvim` |
+
 
 #### Recommended Step
 

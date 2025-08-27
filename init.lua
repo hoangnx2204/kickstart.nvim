@@ -289,7 +289,7 @@ require('lazy').setup({
         ['expandtab'] = false,
       },
       on_space_options = { -- A table of vim options when spaces are detected
-        ['expandtab'] = true,
+        ['expandtab'] = false,
         ['tabstop'] = 'detected', -- If the option value is 'detected', The value is set to the automatically detected indent size.
         ['softtabstop'] = 'detected',
         ['shiftwidth'] = 'detected',
@@ -859,13 +859,13 @@ require('lazy').setup({
         dependencies = {
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
-          --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          -- https://github.com/rafamadriz/friendly-snippets
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
         opts = {},
       },
@@ -1046,7 +1046,7 @@ require('lazy').setup({
       { '<leader>fe', '<cmd>FlutterEmulators<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [E]mulators' },
       { '<leader>fd', '<cmd>FlutterDevices<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [D]evices' },
       { '<leader>fD', '<cmd>FlutterOpenDevTools<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter Open [D]evTools' },
-      { '<leader>fpg', '<cmd>FlutterPubGet<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter Pub Get' },
+      { '<leader>fg', '<cmd>FlutterPubGet<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter Pub Get' },
       { '<leader>fq', '<cmd>FlutterQuit<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [Q]uit' },
     },
     config = true,
@@ -1069,6 +1069,16 @@ require('lazy').setup({
     -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
     -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
     lazy = false,
+    keys = {
+      {
+        '<leader>o',
+        function()
+          require('oil').toggle_float()
+        end,
+        mode = 'n',
+        desc = 'Open Oil',
+      },
+    },
   },
 
   -- Lualine: Status line
@@ -1130,6 +1140,7 @@ require('lazy').setup({
       extensions = {},
     },
   },
+  { 'akinsho/toggleterm.nvim', version = '*', config = true },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -1145,7 +1156,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
