@@ -151,6 +151,7 @@ vim.o.splitbelow = true
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
 vim.o.list = true
+-- vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
@@ -289,7 +290,7 @@ require('lazy').setup({
         ['expandtab'] = false,
       },
       on_space_options = { -- A table of vim options when spaces are detected
-        ['expandtab'] = false,
+        ['expandtab'] = true,
         ['tabstop'] = 'detected', -- If the option value is 'detected', The value is set to the automatically detected indent size.
         ['softtabstop'] = 'detected',
         ['shiftwidth'] = 'detected',
@@ -469,6 +470,7 @@ require('lazy').setup({
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'flutter')
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
@@ -860,12 +862,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           -- https://github.com/rafamadriz/friendly-snippets
-          {
-            'rafamadriz/friendly-snippets',
-            config = function()
-              require('luasnip.loaders.from_vscode').lazy_load()
-            end,
-          },
+          -- {
+          --   'rafamadriz/friendly-snippets',
+          --   config = function()
+          --     require('luasnip.loaders.from_vscode').lazy_load()
+          --   end,
+          -- },
         },
         opts = {},
       },
@@ -1040,16 +1042,65 @@ require('lazy').setup({
     },
     keys = {
       { '<leader>f', '', ft = { 'dart', 'log' }, desc = '[F]lutter' },
-      { '<leader>fr', '<cmd>FlutterRun<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [r]un' },
-      { '<leader>fR', '<cmd>FlutterRestart<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [R]estart' },
-      { '<leader>fl', '<cmd>FlutterLogToggle<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [L]og Toggle' },
-      { '<leader>fe', '<cmd>FlutterEmulators<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [E]mulators' },
-      { '<leader>fd', '<cmd>FlutterDevices<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [D]evices' },
-      { '<leader>fD', '<cmd>FlutterOpenDevTools<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter Open [D]evTools' },
-      { '<leader>fg', '<cmd>FlutterPubGet<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter Pub Get' },
+      {
+        '<leader>ff',
+        function()
+          require('telescope').extensions.flutter.commands()
+        end,
+        ft = { 'dart', 'log', 'oil' },
+        desc = '[F]lutter All Commands',
+      },
+      {
+        '<leader>fvm',
+        function()
+          require('telescope').extensions.flutter.fvm()
+        end,
+        ft = { 'dart', 'log', 'oil' },
+        desc = '[F]lutter [V]ersions [Manager] FVM',
+      },
+      { '<leader>fr', '<cmd>FlutterRun<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter [r]un' },
+      { '<leader>fR', '<cmd>FlutterRestart<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter [R]estart' },
+      { '<leader>fl', '<cmd>FlutterLogToggle<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter [L]og Toggle' },
+      { '<leader>fe', '<cmd>FlutterEmulators<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter [E]mulators' },
+      { '<leader>fd', '<cmd>FlutterDevices<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter [D]evices' },
+      { '<leader>fD', '<cmd>FlutterOpenDevTools<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter Open [D]evTools' },
+      { '<leader>fg', '<cmd>FlutterPubGet<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter Pub Get' },
+      {
+        '<leader>fG',
+        '<cmd>TermExec cmd="fvm flutter pub run build_runner build --delete-conflicting-outputs"<CR>',
+        ft = { 'dart', 'log' },
+        desc = '[F]lutter [G]enerate',
+      },
+      { '<leader>fw', '<cmd>!d run build_runner watch --delete-conflicting-outputs<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [w]atch generate' },
       { '<leader>fq', '<cmd>FlutterQuit<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [Q]uit' },
+      { '<leader>fmr', '<cmd>FlutterRun --flavor develop<cr>', ft = { 'dart', 'log' }, desc = '[F]lutter [M]elos [R]un' },
+      {
+        '<leader>fmi',
+        function()
+          vim.cmd '!melos bs'
+          vim.cmd '!melos build_runner:build'
+          vim.cmd '!melos gentext'
+        end,
+        ft = { 'dart', 'log' },
+        desc = '[F]lutter [M]elos [R]un',
+      },
     },
     config = true,
+  },
+
+  -- Debugger adapter
+  { 'mfussenegger/nvim-dap' },
+
+  {
+    'wasabeef/melos.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim' },
+    config = function()
+      require('melos').setup {
+        -- Set the size of the floating terminal when executing scripts (optional)
+        -- terminal_width = 100, -- Width (in characters)
+        -- terminal_height = 30, -- Height (in lines)
+      }
+    end,
   },
 
   -- AutoSave
@@ -1155,7 +1206,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`

@@ -162,6 +162,14 @@ Below you can find OS specific install instructions for Neovim and dependencies.
 
 After installing all the dependencies continue with the [Install Kickstart](#Install-Kickstart) step.
 
+#### MacOS Installation
+
+Install yq for melos flutter support
+```zsh
+  brew install yq
+```
+
+
 #### Windows Installation
 
 <details><summary>Windows with Microsoft C++ Build Tools and CMake</summary>
