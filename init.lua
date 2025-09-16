@@ -111,6 +111,9 @@ vim.o.mouse = 'a'
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
 
+vim.o.tabstop = 2
+vim.o.shiftwidth = 2
+
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
@@ -862,12 +865,14 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           -- https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip').log.set_loglevel 'info'
+              -- require('luasnip.loaders.from_vscode').lazy_load()
+              require('luasnip.loaders.from_vscode').load { paths = { vim.fn.stdpath 'config' .. '/snippets' } }
+            end,
+          },
         },
         opts = {},
       },
@@ -1065,6 +1070,7 @@ require('lazy').setup({
       { '<leader>fd', '<cmd>FlutterDevices<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter [D]evices' },
       { '<leader>fD', '<cmd>FlutterOpenDevTools<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter Open [D]evTools' },
       { '<leader>fg', '<cmd>FlutterPubGet<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter Pub Get' },
+      { '<leader>fc', '<cmd>FlutterLogClear<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter Log [c]lear' },
       {
         '<leader>fG',
         '<cmd>TermExec cmd="fvm flutter pub run build_runner build --delete-conflicting-outputs"<CR>',

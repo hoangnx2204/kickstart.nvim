@@ -1,0 +1,134 @@
+{
+  "Todo with mark": {
+    "prefix": "todo",
+    "body": [
+      "// TODO - HoangNX: $1"
+    ],
+    "description": "Add todo code with mark"
+  },
+  "Print with mark": {
+    "prefix": "print mark",
+    "body": [
+      "print('HoangNX: $1');"
+    ],
+    "description": "Print with mark"
+  },
+  "Navigator push": {
+    "prefix": "navigator push",
+    "body": [
+      "Navigator.push(",
+      "\tcontext,",
+      "\tMaterialPageRoute(",
+      "\t\tbuilder: (context) => const $1,",
+      "\t),",
+      ");$2"
+    ]
+  },
+  "SizedBox with default height": {
+    "prefix": "Height sizedBox",
+    "body": "SizedBox(height: 1${2}0),$1"
+  },
+  "SizedBox with default width": {
+    "prefix": "Width sizedBox",
+    "body": "SizedBox(width: 1${2}0),$1"
+  },
+  "Elevated custom button": {
+    "prefix": "Elevated custom button",
+    "body": [
+      "ElevatedButton(",
+      "\tonPressed: () {$2},",
+      "\tchild: const Text('$1'),",
+      "),$3"
+    ]
+  },
+  "Home page": {
+    "prefix": "Home page",
+    "body": [
+      "import 'package:flutter/material.dart';",
+      "",
+      "void main() {",
+      "\trunApp(const MyApp());",
+      "}",
+      "",
+      "class MyApp extends StatelessWidget {",
+      "\tconst MyApp({super.key});",
+      "",
+      "\t@override",
+      "\tWidget build(BuildContext context) {",
+      "\t\treturn MaterialApp(",
+      "\t\t\ttitle: '${1:Flutter Demo}',",
+      "\t\t\ttheme: ThemeData(",
+      "\t\t\t\tcolorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),",
+      "\t\t\t),",
+      "\t\t\thome: const HomePage(),",
+      "\t\t);",
+      "\t}",
+      "}",
+      "",
+      "class HomePage extends StatefulWidget {",
+      "\tconst HomePage({super.key});",
+      "\t@override",
+      "\tState<HomePage> createState() => _HomePageState();",
+      "}",
+      "",
+      "class _HomePageState extends State<HomePage> {",
+      "\t@override",
+      "\tWidget build(BuildContext context) {",
+      "\t\treturn Scaffold(",
+      "\t\t\tappBar: AppBar(),",
+      "\t\t\tbody: Padding(",
+      "\t\t\t\tpadding: EdgeInsets.all(16),",
+      "\t\t\t\tchild: Column(",
+      "\t\t\t\t\tchildren: [",
+      "\t\t\t\t\t\tCenter(",
+      "\t\t\t\t\t\t\tchild: Text('Home page'),",
+      "\t\t\t\t\t\t),$2",
+      "\t\t\t\t\t],",
+      "\t\t\t\t),",
+      "\t\t\t),",
+      "\t\t);",
+      "\t}",
+      "}"
+    ]
+  },
+  "New Page": {
+    "prefix": "New Page",
+    "body": [
+      "import 'package:flutter/material.dart';",
+      "class ${1:NewPage} extends StatefulWidget {",
+      "\tconst ${1:NewPage}({super.key});",
+      "\t@override",
+      "\tState<${1:NewPage}> createState() => _${1:NewPage}State();",
+      "}",
+      "class _${1:NewPage}State extends State<${1:NewPage}> {",
+      "\t@override",
+      "\tWidget build(BuildContext context) {",
+      "\t\treturn Scaffold(",
+      "\t\t\tappBar: AppBar(),",
+      "\t\t\tbody: Padding(",
+      "\t\t\tpadding: EdgeInsets.all(16),",
+      "\t\t\t\tchild: Column(",
+      "\t\t\t\t\tchildren: [Text('${1:NewPage}')$2],",
+      "\t\t\t\t),",
+      "\t\t\t),",
+      "\t\t);",
+      "\t}",
+      "}"
+    ]
+  },
+  "Show Snackbar": {
+    "prefix": "snackbar",
+    "body": [
+      "ScaffoldMessenger.maybeOf(context)?.clearSnackBars();",
+      "ScaffoldMessenger.maybeOf(context)?.showSnackBar(",
+      "\tSnackBar(content: Text('${1:Message}')),",
+      "),"
+    ]
+  },
+  "navigator pop": {
+    "prefix": "navigator pop",
+    "body": [
+      "Navigator.pop(context)${1:;}"
+    ]
+  }
+}
