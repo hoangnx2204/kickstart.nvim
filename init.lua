@@ -331,6 +331,15 @@ require('lazy').setup({
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+      current_line_blame = true,
+      current_line_blame_opts = {
+        virt_text = true,
+        virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+        delay = 0,
+        ignore_whitespace = false,
+        virt_text_priority = 100,
+        use_focus = true,
+      },
     },
   },
 
@@ -1198,6 +1207,13 @@ require('lazy').setup({
     },
   },
   { 'akinsho/toggleterm.nvim', version = '*', config = true },
+  {
+    'stevearc/overseer.nvim',
+    opts = {},
+    keys = {
+      { '<F6>', '<cmd>OverseerToggle<cr>', ft = { 'dart', 'OverseerList' }, desc = 'Overseer toggle' },
+    },
+  },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
