@@ -177,11 +177,16 @@ Installation may require installing build tools and updating the run command for
 
 See `telescope-fzf-native` documentation for [more details](https://github.com/nvim-telescope/telescope-fzf-native.nvim#installation)
 
+
 This requires:
 
 - Install CMake and the Microsoft C++ Build Tools on Windows
   using this portable [c,c++ devkit](https://github.com/skeeto/w64devkit/)
-  Fix ctrl + space combination doesnt work by using this setting for windows terminal
+- Install ripgrep and fd to support telescope
+  ```powershell
+  winget install BurntSushi.ripgrep.MSVC fd
+  ```
+- Fix ctrl + space combination doesnt work by using this setting for windows terminal
   ```json
   {
     "actions": [
