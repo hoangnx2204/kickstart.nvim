@@ -127,8 +127,75 @@
   },
   "navigator pop": {
     "prefix": "navigator pop",
+    "body": "Navigator.pop(context)${1:;}"
+  },
+  "textTheme": {
+    "prefix": "textTheme",
+    "body": "final textTheme = Theme.of(context).textTheme;"
+  },
+  "bloc variable": {
+    "prefix": "bloc variable",
+    "body": "late final bloc = context.read<$1>();"
+  },
+  "class new event": {
+    "prefix": "class new event",
     "body": [
-      "Navigator.pop(context)${1:;}"
+      "part of '$1_bloc.dart';",
+      "@freezed",
+      "class ${1/(.*)/${1:/capitalize}/}Event with _${1/(.*)/${1:/capitalize}/}Event {",
+      "\tconst factory ${1/(.*)/${1:/capitalize}/}Event.started() = _Started;",
+      "}"
     ]
-  }
+  },
+  "const factory event": {
+    "prefix": "const factory event",
+    "body": "const factory $2.$1($3) = _${1/(.*)/${1:/capitalize}/};"
+  },
+  "class new state": {
+    "prefix": "class new state",
+    "body": [
+      "part of '$1_bloc.dart';",
+      "@freezed",
+      "sealed class ${1/(.*)/${1:/capitalize}/}State with _$${1/(.*)/${1:/capitalize}/}State {",
+      "\tconst factory ${1/(.*)/${1:/capitalize}/}State.initial() = _Initial;",
+      "\tconst factory ${1/(.*)/${1:/capitalize}/}State.error(errMessage) = _ErrorMessage;",
+      "\tconst factory ${1/(.*)/${1:/capitalize}/}State.success() = _Success;",
+      "}"
+    ]
+  },
+  "const factory state": {
+    "prefix": "const factory state",
+    "body": "const factory ${2/(.*)/${1:/capitalize}/}State.$1($3) = _${1/(.*)/${1:/capitalize}/};"
+  },
+  "class new bloc": {
+    "prefix": "class new bloc",
+    "body": [
+      "import 'package:flutter_bloc/flutter_bloc.dart';",
+      "import 'package:freezed_annotation/freezed_annotation.dart';\n",
+      "part '$1_bloc.freezed.dart';",
+      "part '$1_event.dart';",
+      "part '$1_state.dart';\n",
+      "class ${1/(.*)/${1:/capitalize}/}Bloc extends Bloc<${1/(.*)/${1:/capitalize}/}Event, ${1/(.*)/${1:/capitalize}/}State> {",
+      "\t${1/(.*)/${1:/capitalize}/}Bloc() : super(_Initial()) {",
+      "\t\ton<${1/(.*)/${1:/capitalize}/}Event>((event, emit) {",
+      "\t\t\t// TODO: implement event handler $2",
+      "\t\t});",
+      "\t}",
+      "}"
+    ]
+  },
+	"class new usecase": {
+		"prefix": "class new usecase",
+		"body": [
+			"class $1 extends BaseUseCaseNoInput<$1> {",
+			"  final $3 repository;",
+			"  $1(this.repository);\n",
+			"  @override",
+			"  Future<Either<AppException, $2>> execute(NoInput input) async {",
+			"    ${4://TODO: implement usecase}",
+			"    return Right(SingleOutput(output: ''));",
+			"  }",
+			"}"
+		]
+	}
 }
