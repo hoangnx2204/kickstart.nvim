@@ -145,6 +145,9 @@ vim.o.timeoutlen = 300
 vim.o.splitright = true
 vim.o.splitbelow = true
 
+-- Config to run exrc files
+vim.o.exrc = true
+
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
 --  and `:help 'listchars'`
@@ -466,12 +469,27 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
-        -- pickers = {}
+        defaults = {
+          -- vimgrep_arguments = {
+          --   'rg',
+          --   '--color=never',
+          --   '--no-heading',
+          --   '--with-filename',
+          --   '--line-number',
+          --   '--column',
+          --   '--smart-case',
+          --   '--no-ignore', -- **This is the added flag**
+          --   '--hidden', -- **Also this flag. The combination of the two is the same as `-uu`**          },
+          -- },
+        },
+        pickers = {
+          find_files = {
+            hidden = true,
+            file_ignore_patterns = {
+              '^%.git/',
+            },
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -1072,7 +1090,8 @@ require('lazy').setup({
         ft = { 'dart', 'log', 'oil' },
         desc = '[F]lutter [V]ersions [Manager] FVM',
       },
-      { '<leader>fr', '<cmd>FlutterRun<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter [r]un' },
+      { '<leader>frr', '<cmd>FlutterRun<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter [r]un [r]elease' },
+      { '<leader>frd', '<cmd>FlutterDebug<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter [r]un [d]ebug' },
       { '<leader>fR', '<cmd>FlutterRestart<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter [R]estart' },
       { '<leader>fl', '<cmd>FlutterLogToggle<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter [L]og Toggle' },
       { '<leader>fe', '<cmd>FlutterEmulators<cr>', ft = { 'dart', 'log', 'oil' }, desc = '[F]lutter [E]mulators' },
@@ -1105,6 +1124,7 @@ require('lazy').setup({
 
   -- Debugger adapter
   { 'mfussenegger/nvim-dap' },
+  { 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
 
   {
     'wasabeef/melos.nvim',
@@ -1129,7 +1149,11 @@ require('lazy').setup({
     'stevearc/oil.nvim',
     --@module 'oil'
     --@type oil.SetupOpts
-    opts = {},
+    opts = {
+      view_options = {
+        show_hidden = true,
+      },
+    },
     -- Optional dependencies
     dependencies = { { 'echasnovski/mini.icons', opts = {} } },
     -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
@@ -1206,7 +1230,15 @@ require('lazy').setup({
       extensions = {},
     },
   },
-  { 'akinsho/toggleterm.nvim', version = '*', config = true },
+  {
+    'akinsho/toggleterm.nvim',
+    version = '*',
+    config = true,
+    keys = {
+      { '<C-@>', '<cmd>ToggleTerm<cr>', mode = { 'n', 'i' }, desc = 'Toggle Term' },
+      { '<ESC>', '<C-\\><C-n>', mode = { 't' }, desc = 'Switch to normal mode from terminal' },
+    },
+  },
   {
     'stevearc/overseer.nvim',
     opts = {},
@@ -1214,6 +1246,9 @@ require('lazy').setup({
       { '<F6>', '<cmd>OverseerToggle<cr>', ft = { 'dart', 'OverseerList' }, desc = 'Overseer toggle' },
     },
   },
+
+  -- resolve git confict in 2 ways method, just like vscode
+  { 'akinsho/git-conflict.nvim', version = '*', config = true },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
