@@ -197,5 +197,29 @@
 			"  }",
 			"}"
 		]
-	}
+	},
+	"bloc builder": {
+		"prefix": "bloc builder",
+		"body": [
+			"BlocBuilder<$1Bloc, $1State>(",
+        "buildWhen: (_, state) => state is $2,",
+			"),"
+		]
+	},
+  "class freezed model": {
+    "prefix": "class freezed model",
+		"body": [
+			"import 'package:freezed_annotation/freezed_annotation.dart';\n",
+			"part '${TM_FILENAME_BASE}.freezed.dart';",
+			"part '${TM_FILENAME_BASE}.g.dart';\n",
+			"@freezed",
+			"abstract class $1 with _$$1{",
+			"  const factory $1({",
+			"    @Default('') final String username,",
+			"    @Default('') final String password,$2",
+			"  }) = _$1;\n",
+			"  factory $1.fromJson(Map<String, dynamic> json) => _$$1FromJson(json);",
+			"}"
+    ]
+  }
 }

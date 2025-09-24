@@ -1124,7 +1124,29 @@ require('lazy').setup({
 
   -- Debugger adapter
   { 'mfussenegger/nvim-dap' },
-  { 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
+  {
+    'rcarriga/nvim-dap-ui',
+    dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' },
+    opts = function()
+      require('dapui').setup()
+    end,
+    keys = {
+      {
+        '<leader>dt',
+        function()
+          require('dapui').toggle()
+        end,
+        mode = 'n',
+        desc = 'Toggle dap UI',
+      },
+    },
+  },
+  {
+    'folke/lazydev.nvim',
+    opts = {
+      library = { 'nvim-dap-ui' },
+    },
+  },
 
   {
     'wasabeef/melos.nvim',
@@ -1156,7 +1178,7 @@ require('lazy').setup({
     },
     -- Optional dependencies
     dependencies = { { 'echasnovski/mini.icons', opts = {} } },
-    -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+    -- dependencies = { "" }, -- use if you prefer nvim-web-devicons
     -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
     lazy = false,
     keys = {
