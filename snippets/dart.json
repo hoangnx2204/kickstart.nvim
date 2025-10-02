@@ -221,5 +221,14 @@
 			"  factory $1.fromJson(Map<String, dynamic> json) => _$$1FromJson(json);",
 			"}"
     ]
+  },
+  "extension to entity": {
+    "prefix": "extension to entity",
+		"body": [
+      "extension $1Ext on $1 {",
+        "$1Entity toEntity() => $1Entity(",
+        ");",
+      "}"
+    ]
   }
 }

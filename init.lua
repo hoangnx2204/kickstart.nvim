@@ -994,7 +994,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'tokyonight-moon'
     end,
   },
 
@@ -1271,6 +1271,24 @@ require('lazy').setup({
 
   -- resolve git confict in 2 ways method, just like vscode
   { 'akinsho/git-conflict.nvim', version = '*', config = true },
+
+  {
+    'catgoose/nvim-colorizer.lua',
+    event = 'BufReadPre',
+    opts = { -- set to setup table
+      user_default_options = {
+        virtualtext = '●', -- ● ■,
+        virtualtext_inline = true,
+        virtualtext_mode = 'foreground',
+        mode = 'virtualtext',
+        always_update = true,
+        RRGGBBAA = true,
+        AARRGGBB = true,
+        css = true,
+        tailwind = true,
+      },
+    },
+  },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
