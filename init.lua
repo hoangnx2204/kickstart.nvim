@@ -148,6 +148,11 @@ vim.o.splitbelow = true
 -- Config to run exrc files
 vim.o.exrc = true
 
+function _G.statusLine()
+  return vim.g.flutter_tools_decorations.app_version
+end
+vim.opt.statusline = '%!v:statusLine()'
+
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
 --  and `:help 'listchars'`
@@ -951,7 +956,7 @@ require('lazy').setup({
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev' },
+        default = { 'snippets', 'lsp', 'path', 'lazydev' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
         },
@@ -965,8 +970,19 @@ require('lazy').setup({
       -- By default, we use the Lua implementation instead, but you may enable
       -- the rust implementation via `'prefer_rust_with_warning'`
       --
-      -- See :h blink-cmp-config-fuzzy for more information
-      fuzzy = { implementation = 'lua' },
+      -- See :h blink-cmp-config-fuzzy for more informatio:w
+      -- n
+      fuzzy = {
+        implementation = 'lua',
+        sorts = {
+          'score',
+          'sort_text',
+          -- function(a, b)
+          --   return a.label:len() < b.label:len()
+          -- end,
+          'label',
+        },
+      },
 
       -- Shows a signature help window while you type arguments for a function
       signature = { enabled = true },
@@ -1083,7 +1099,7 @@ require('lazy').setup({
         desc = '[F]lutter All Commands',
       },
       {
-        '<leader>fvm',
+        '<leader>fv',
         function()
           require('telescope').extensions.flutter.fvm()
         end,
@@ -1120,6 +1136,9 @@ require('lazy').setup({
       },
     },
     config = true,
+    opts = function()
+      vim.lsp.enable 'dartls'
+    end,
   },
 
   -- Debugger adapter

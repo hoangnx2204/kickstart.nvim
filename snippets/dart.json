@@ -142,7 +142,7 @@
     "body": [
       "part of '$1_bloc.dart';",
       "@freezed",
-      "class ${1/(.*)/${1:/capitalize}/}Event with _${1/(.*)/${1:/capitalize}/}Event {",
+      "class ${1/(.*)/${1:/capitalize}/}Event with _$${1/(.*)/${1:/capitalize}/}Event {",
       "\tconst factory ${1/(.*)/${1:/capitalize}/}Event.started() = _Started;",
       "}"
     ]
