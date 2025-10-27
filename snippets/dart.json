@@ -131,7 +131,7 @@
   },
   "textTheme": {
     "prefix": "textTheme",
-    "body": "final textTheme = Theme.of(context).textTheme;"
+    "body": "final TextTheme textTheme = TextTheme.of(context);"
   },
   "bloc variable": {
     "prefix": "bloc variable",

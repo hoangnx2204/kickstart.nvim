@@ -842,7 +842,7 @@ require('lazy').setup({
         '<Esc>',
         function()
           require('conform').format { async = true, lsp_format = 'fallback' }
-          vim.lsp.buf.code_action { apply = true, context = { only = { 'source.fixAll' }, diagnostics = {} } }
+          -- vim.lsp.buf.code_action { apply = true, context = { only = { 'source.fixAll' }, diagnostics = {} } }
         end,
         mode = 'n',
         desc = '[F]ormat buffer',
@@ -977,9 +977,9 @@ require('lazy').setup({
         sorts = {
           'score',
           'sort_text',
-          -- function(a, b)
-          --   return a.label:len() < b.label:len()
-          -- end,
+          function(a, b)
+            return a.label:len() < b.label:len()
+          end,
           'label',
         },
       },
@@ -989,28 +989,48 @@ require('lazy').setup({
     },
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+  -- { -- You can easily change to a different colorscheme.
+  --   -- Change the name of the colorscheme plugin below, and then
+  --   -- change the command in the config to whatever the name of that colorscheme is.
+  --   --
+  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  --   'folke/tokyonight.nvim',
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   config = function()
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require('tokyonight').setup {
+  --       transparent = true,
+  --       styles = {
+  --         comments = { italic = false }, -- Disable italics in comments
+  --         slidebars = 'transparent',
+  --         floats = 'transparent',
+  --       },
+  --     }
+  --
+  --     -- Load the colorscheme here.
+  --     -- Like many other themes, this one has different styles, and you could load
+  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --     vim.cmd.colorscheme 'tokyonight-moon'
+  --   end,
+  -- },
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
     config = function()
       ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        transpacent = true,
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-          slidebars = 'transparent',
-          floats = 'transparent',
+      require('catppuccin').setup {
+        transparent_background = true,
+        float = {
+          transparent = true,
+          solid = false,
         },
       }
 
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-moon'
+      vim.cmd.colorscheme 'catppuccin-macchiato'
     end,
   },
 
